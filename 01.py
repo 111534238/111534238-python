@@ -7,25 +7,27 @@ import os
 import csv
 
 # ================= 引入 Matplotlib 繪圖套件 =================
+# 注意：必須指定後端為 TkAgg，才能在 Tkinter 視窗中顯示圖表
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
-# 設定 Matplotlib 字型以支援中文 (避免亂碼)
+# 設定 Matplotlib 字型以支援中文 (避免出現方塊亂碼)
 plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
-plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['axes.unicode_minus'] = False # 解決負號顯示問題
 
+# 資料儲存檔名
 DATA_FILE = "erp_v20_data.json"
 
-# ================= 設定全域配色 =================
+# ================= 設定全域配色 (方便日後統一修改風格) =================
 COLORS = {
-    "primary": "#E45674",      # 主色調
-    "secondary": "#57606f",    # 次要色
-    "success": "#2ecc71",      # 成功
-    "warning": "#ffa502",      # 警告
-    "danger": "#bd2323",       # 危險
+    "primary": "#E45674",      # 主色調 (桃紅)
+    "secondary": "#57606f",    # 次要色 (深灰)
+    "success": "#2ecc71",      # 成功 (綠)
+    "warning": "#ffa502",      # 警告 (橘)
+    "danger": "#bd2323",       # 危險 (紅)
     "bg_light": "#f1f2f6",     # 淺灰背景
     "bg_white": "#ffffff",     # 純白背景
     "text": "#2f3542",         # 深色文字
@@ -33,15 +35,20 @@ COLORS = {
     "table_row_even": "#f1f2f6"# 表格偶數行底色
 }
 
+# 預設字型設定
 FONT_MAIN = ("Microsoft JhengHei UI", 12)
 FONT_BOLD = ("Microsoft JhengHei UI", 13, "bold")
 FONT_TITLE = ("Microsoft JhengHei UI", 12, "bold")
 
-# ================= 輕量級月曆選擇器 =================
+# ================= 類別：輕量級月曆選擇器 =================
 class SimpleCalendar(tk.Toplevel):
+    """
+    這是一個彈出式視窗，繼承自 Toplevel。
+    用來讓使用者點選日期，並將選到的日期回傳給主視窗。
+    """
     def __init__(self, parent, callback):
         super().__init__(parent)
-        self.callback = callback
+        self.callback = callback  # 這是當使用者選好日期後，要執行的函式
         self.title("選擇日期")
         self.geometry("415x350")
         self.configure(bg=COLORS["bg_white"])
@@ -49,8 +56,10 @@ class SimpleCalendar(tk.Toplevel):
         self.setup_ui()
 
     def setup_ui(self):
+        # 每次換月份時，先清空舊的按鈕
         for widget in self.winfo_children(): widget.destroy()
         
+        # --- 頂部導航列 (上個月 / 顯示月份 / 下個月) ---
         header = tk.Frame(self, bg=COLORS["primary"], pady=5)
         header.pack(fill='x')
         
@@ -65,27 +74,32 @@ class SimpleCalendar(tk.Toplevel):
                              bg=COLORS["primary"], fg="white", bd=0, font=FONT_BOLD, activebackground=COLORS["secondary"])
         btn_next.pack(side='right', padx=15)
 
+        # --- 星期標題 ---
         days_frame = tk.Frame(self, bg=COLORS["bg_light"], pady=5)
         days_frame.pack(fill='x')
         days = ["一", "二", "三", "四", "五", "六", "日"]
         for d in days: 
             tk.Label(days_frame, text=d, width=5, bg=COLORS["bg_light"], font=FONT_BOLD).pack(side='left', expand=True)
 
+        # --- 日期按鈕區 ---
         cal_frame = tk.Frame(self, bg=COLORS["bg_white"], padx=10, pady=10)
         cal_frame.pack(expand=True, fill='both')
         
+        # 使用 calendar 模組取得當月的週曆矩陣
         cal = calendar.monthcalendar(self.current_date.year, self.current_date.month)
         for r, week in enumerate(cal):
             for c, day in enumerate(week):
-                if day != 0:
+                if day != 0: # 0 代表該格不屬於這個月份
                     btn = tk.Button(cal_frame, text=str(day), width=4, 
                                     command=lambda d=day: self.select_date(d),
                                     bg="white", relief="flat", font=FONT_MAIN)
+                    # 加入滑鼠移入移出的變色效果
                     btn.bind("<Enter>", lambda e, b=btn: b.config(bg=COLORS["bg_light"]))
                     btn.bind("<Leave>", lambda e, b=btn: b.config(bg="white"))
                     btn.grid(row=r, column=c, padx=3, pady=3, ipady=3)
 
     def change_month(self, delta):
+        """ 切換月份邏輯 """
         month = self.current_date.month + delta
         year = self.current_date.year
         if month > 12: month = 1; year += 1
@@ -94,11 +108,12 @@ class SimpleCalendar(tk.Toplevel):
         self.setup_ui()
 
     def select_date(self, day):
+        """ 選擇日期後，格式化字串並呼叫 callback """
         selected_date = self.current_date.replace(day=day).strftime("%Y-%m-%d")
         self.callback(selected_date)
         self.destroy()
 
-# ================= 主系統邏輯 =================
+# ================= 類別：主系統邏輯 =================
 class AdvancedERPSystem:
     def __init__(self, root):
         self.root = root
@@ -106,23 +121,26 @@ class AdvancedERPSystem:
         self.root.geometry("1400x900")
         self.root.configure(bg=COLORS["bg_light"]) 
         
+        # --- 註冊輸入驗證函式 (給 Entry 使用) ---
         self.vcmd_int = (self.root.register(self.validate_int), '%P')
         self.vcmd_float = (self.root.register(self.validate_float), '%P')
 
-        self.setup_styles()
+        self.setup_styles() # 設定 Treeview 與 Tab 樣式
 
+        # --- 初始化資料結構 ---
         self.data = {
-            "po_db": [],
-            "stock_db": {'CPU-i9': 5, 'RAM-16G': 50},
-            "sales_db": [], 
-            "ap_db": [], 
-            "memory_items": ['CPU-i9', 'RAM-16G', 'SSD-1TB', 'Office軟體'],
+            "po_db": [],      # 採購單資料庫
+            "stock_db": {'CPU-i9': 5, 'RAM-16G': 50}, # 現有庫存
+            "sales_db": [],   # 銷售紀錄
+            "ap_db": [],      # 應付帳款 (Accounts Payable)
+            "memory_items": ['CPU-i9', 'RAM-16G', 'SSD-1TB', 'Office軟體'], # 選單記憶
             "memory_vendors": ['光華科技', '原價屋', '微軟經銷商'],
             "source_types": ['直接輸入', '採購計畫拋轉', '訂貨單拋轉', '詢價單轉入']
         }
-        self.load_data()
-        self.create_main_layout()
+        self.load_data() # 讀取 JSON
+        self.create_main_layout() # 建立畫面
         
+    # --- 輸入驗證工具 ---
     def validate_int(self, P):
         if P == "": return True
         if P.isdigit(): return True
@@ -138,14 +156,17 @@ class AdvancedERPSystem:
         return False
 
     def setup_styles(self):
+        """ 設定 Tkinter 樣式 (Treeview, Notebook 等) """
         style = ttk.Style()
         style.theme_use('clam') 
 
+        # 分頁標籤樣式
         style.configure("TNotebook", background=COLORS["bg_light"], borderwidth=0)
         style.configure("TNotebook.Tab", padding=[15, 8], font=("Microsoft JhengHei UI",15, "bold"), 
                         background="#dcdde1")
         style.map("TNotebook.Tab", background=[("selected", COLORS["primary"])], foreground=[("selected", "white")])
 
+        # 表格樣式
         style.configure("Treeview", 
                         background="white",
                         foreground=COLORS["text"],
@@ -167,15 +188,19 @@ class AdvancedERPSystem:
         style.configure("TLabelframe.Label", font=FONT_BOLD, background=COLORS["bg_light"], foreground=COLORS["primary"])
 
     def create_main_layout(self):
+        """ 建立主畫面架構 """
+        # 標題列
         title_frame = tk.Frame(self.root, bg=COLORS["primary"], height=60)
         title_frame.pack(fill='x', side='top')
         tk.Label(title_frame, text="🏢 倉庫庫存管理系統", 
                  font=("Microsoft JhengHei UI", 25, "bold"), 
                  bg=COLORS["primary"], fg="white").pack(side='left', padx=20, pady=10)
 
+        # 建立分頁容器
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill='both', expand=True, padx=20, pady=20)
         
+        # 建立四個主要分頁
         self.tab_procure = ttk.Frame(self.notebook)
         self.tab_warehouse = ttk.Frame(self.notebook)
         self.tab_finance = ttk.Frame(self.notebook)
@@ -186,25 +211,30 @@ class AdvancedERPSystem:
         self.notebook.add(self.tab_finance, text=' 3. 應付帳款中心 ')
         self.notebook.add(self.tab_dashboard, text=' 4. 經營分析圖表 ')
         
+        # 初始化各分頁內容
         self.setup_procure_tab()
         self.setup_warehouse_tab()
         self.setup_finance_tab()
         self.setup_dashboard_tab()
         
+        # 綁定事件：切換分頁時刷新圖表
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_change)
+        # 綁定事件：關閉視窗時存檔
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def create_flat_button(self, parent, text, cmd, bg_color, fg_color="white", icon=""):
+        """ 快速建立扁平化設計按鈕的輔助函式 """
         btn = tk.Button(parent, text=f"{icon} {text}" if icon else text, 
                         command=cmd, bg=bg_color, fg=fg_color, 
                         font=FONT_BOLD, relief="flat", padx=15, pady=5, cursor="hand2")
         return btn
 
     def on_tab_change(self, event):
+        # 如果切換到圖表頁，自動刷新數據
         if self.notebook.select() == str(self.tab_dashboard):
             self.refresh_dashboard()
 
-    # ================= 檔案存取 =================
+    # ================= 檔案存取邏輯 (JSON) =================
     def save_data(self):
         try:
             with open(DATA_FILE, "w", encoding="utf-8") as f:
@@ -217,6 +247,7 @@ class AdvancedERPSystem:
             try:
                 with open(DATA_FILE, "r", encoding="utf-8") as f:
                     loaded = json.load(f)
+                    # 資料庫遷移與預設值補丁 (防止舊版資料缺欄位報錯)
                     if 'sales_db' not in loaded: loaded['sales_db'] = []
                     for p in loaded.get('po_db', []):
                         if 'received_qty' not in p: p['received_qty'] = 0
@@ -239,6 +270,7 @@ class AdvancedERPSystem:
             self.root.destroy()
 
     def get_id(self, prefix):
+        """ 產生唯一的單號 (格式: 前綴-月日時分秒) """
         return f"{prefix}-{datetime.datetime.now().strftime('%m%H%M%S')}"
 
     # ================= Tab 1: 採購管理 =================
@@ -246,6 +278,7 @@ class AdvancedERPSystem:
         frame_top = tk.Frame(self.tab_procure, bg="white", pady=15, padx=15)
         frame_top.pack(fill='x', padx=10, pady=10)
         
+        # 頂部功能按鈕區
         self.create_flat_button(frame_top, "查看日程表", self.show_calendar_view, COLORS["secondary"], icon="📅").pack(side='left', padx=5)
         self.create_flat_button(frame_top, "匯出報表", self.export_procurement_data, "#27ae60", icon="📊").pack(side='left', padx=5)
 
@@ -254,6 +287,7 @@ class AdvancedERPSystem:
         self.create_flat_button(frame_top, "Email傳送", self.send_email_simulation, COLORS["warning"], icon="📧").pack(side='right', padx=5)
         self.create_flat_button(frame_top, "新增採購單", self.open_po_window, COLORS["primary"], icon="➕").pack(side='right', padx=5)
 
+        # 建立 Treeview (採購列表)
         cols = ("單號", "來源", "廠商", "品項", "製造日期", "訂購量", "預計交期", "郵件狀態", "總金額", "進貨狀態")
         self.tree_po = ttk.Treeview(self.tab_procure, columns=cols, show='headings', height=15)
         
@@ -262,6 +296,7 @@ class AdvancedERPSystem:
             self.tree_po.heading(c, text=c)
             self.tree_po.column(c, width=w, anchor='center')
         
+        # 設定特殊狀態的顏色 (已結案變灰，部分交貨變紅)
         self.tree_po.tag_configure('closed', foreground='#bdc3c7') 
         self.tree_po.tag_configure('partial', foreground=COLORS["primary"]) 
         self.tree_po.tag_configure('even', background=COLORS["table_row_even"]) 
@@ -270,12 +305,14 @@ class AdvancedERPSystem:
         self.refresh_po_list()
 
     def refresh_po_list(self):
+        """ 刷新採購列表數據 """
         for row in self.tree_po.get_children(): self.tree_po.delete(row)
         for idx, p in enumerate(self.data['po_db']):
             total = p['qty'] * p['price']
             status_show = p['status']
             tag = 'odd' if idx % 2 != 0 else 'even'
             
+            # 判斷狀態顯示文字
             if p['status'] == 'Open' and p['received_qty'] > 0:
                 status_show = f"部分 ({p['received_qty']}/{p['qty']})"
                 tag_special = 'partial'
@@ -292,6 +329,7 @@ class AdvancedERPSystem:
             ), tags=(tag, tag_special))
 
     def export_procurement_data(self):
+        """ 匯出 CSV 功能 """
         if not self.data['po_db']:
             messagebox.showwarning("無資料", "目前沒有採購單可以匯出！")
             return
@@ -318,6 +356,7 @@ class AdvancedERPSystem:
             messagebox.showerror("匯出失敗", f"發生錯誤：{str(e)}")
 
     def open_po_window(self, is_edit=False):
+        """ 彈出新增/修改採購單的視窗 """
         edit_idx, edit_val = None, None
         if is_edit:
             sel = self.tree_po.selection()
@@ -334,12 +373,14 @@ class AdvancedERPSystem:
         form = tk.Frame(win, padx=30, pady=30, bg="white")
         form.pack(fill='both', expand=True)
 
+        # 輔助函式：快速建立標籤與輸入框
         def add_field(label, row, widget_class, **kwargs):
             tk.Label(form, text=label, font=FONT_BOLD, bg="white", fg=COLORS["secondary"]).grid(row=row, column=0, sticky='w', pady=10)
             w = widget_class(form, font=FONT_MAIN, **kwargs)
             w.grid(row=row, column=1, sticky='ew', padx=10)
             return w
 
+        # --- 表單欄位 ---
         e_id = add_field("單號:", 0, tk.Entry, bg="#f1f2f6", relief="flat")
         e_id.insert(0, edit_val['id'] if is_edit else self.get_id("PO"))
         e_id.config(state='readonly')
@@ -366,6 +407,7 @@ class AdvancedERPSystem:
         e_mfg.pack(side='left', fill='x', expand=True)
         if is_edit: e_mfg.insert(0, edit_val.get('mfg_date', ''))
         
+        # 日期選擇器按鈕
         tk.Button(mfg_frame, text="📅", command=lambda: SimpleCalendar(win, lambda d: (e_mfg.delete(0, 'end'), e_mfg.insert(0, d))),
                   relief="flat", bg=COLORS["secondary"], fg="white").pack(side='right', padx=2)
 
@@ -422,6 +464,7 @@ class AdvancedERPSystem:
                 'status': 'Open'
             }
             
+            # 自動將新輸入的廠商與品項加入記憶清單
             if data['vendor'] not in self.data['memory_vendors']: self.data['memory_vendors'].append(data['vendor'])
             if data['item'] not in self.data['memory_items']: self.data['memory_items'].append(data['item'])
             
@@ -439,6 +482,7 @@ class AdvancedERPSystem:
         self.create_flat_button(form, "儲存並建立", save, COLORS["success"]).grid(row=8, column=0, columnspan=2, pady=30, sticky='ew')
 
     def send_email_simulation(self):
+        """ 模擬發送 Email """
         sel = self.tree_po.selection()
         if not sel: return messagebox.showwarning("提示", "請選擇要傳送的採購單")
         idx = int(sel[0])
@@ -447,12 +491,15 @@ class AdvancedERPSystem:
         po['email_status'] = '已傳送 (廠商未讀)'
         self.refresh_po_list()
         self.save_data()
+        
+        # 模擬廠商讀取 (用對話框詢問)
         if messagebox.askyesno("確認", "廠商已讀取郵件？"):
             po['email_status'] = '✅ 廠商已讀'
             self.refresh_po_list()
             self.save_data()
 
     def delete_po(self):
+        """ 刪除採購單 (有防呆：已進貨不能刪) """
         sel = self.tree_po.selection()
         if not sel: return
         idx = int(sel[0])
@@ -463,6 +510,7 @@ class AdvancedERPSystem:
         self.save_data()
 
     def show_calendar_view(self):
+        """ 顯示簡單的採購交期列表視窗 """
         win = tk.Toplevel(self.root)
         win.title("採購日程表 (本月)")
         win.geometry("600x450")
@@ -481,11 +529,13 @@ class AdvancedERPSystem:
                 tree.insert("", "end", values=(p['delivery_date'], p['vendor'], p['item'], remain), tags=(tag,))
         tree.tag_configure('even', background=COLORS["table_row_even"])
 
-    # ================= Tab 2: 倉儲 =================
+    # ================= Tab 2: 倉儲管理 (進銷存) =================
     def setup_warehouse_tab(self):
+        # 使用 PanedWindow 建立左右可調整大小的分欄
         paned = ttk.PanedWindow(self.tab_warehouse, orient=tk.HORIZONTAL)
         paned.pack(fill='both', expand=True, padx=10, pady=10)
         
+        # --- 左側：待進貨監控 ---
         frame_l = ttk.LabelFrame(paned, text="📦 待進貨監控", padding=10)
         paned.add(frame_l, weight=2)
         cols = ("單號", "品項", "訂購量", "已收量", "尚欠量", "狀態")
@@ -496,9 +546,11 @@ class AdvancedERPSystem:
             else: w = 80
             self.tree_in.column(c, anchor='center', width=w)
         self.tree_in.pack(fill='both', expand=True)
+        # 綁定雙擊事件 -> 開啟收貨視窗
         self.tree_in.bind("<Double-1>", self.open_receipt_window)
         self.tree_in.tag_configure('even', background=COLORS["table_row_even"])
         
+        # --- 右側：現有庫存 ---
         frame_r = ttk.LabelFrame(paned, text="📊 庫存與銷貨", padding=10)
         paned.add(frame_r, weight=2)
         self.tree_stock = ttk.Treeview(frame_r, columns=("品項", "庫存量", "庫存總值"), show='headings')
@@ -509,17 +561,21 @@ class AdvancedERPSystem:
         self.tree_stock.pack(fill='both', expand=True)
         self.tree_stock.tag_configure('even', background=COLORS["table_row_even"])
         
+        # 銷貨按鈕
         self.create_flat_button(frame_r, "銷貨/領料出庫 (紀錄營收)", self.open_sales_window, COLORS["danger"], icon="📤").pack(fill='x', pady=10)
 
         self.refresh_warehouse_list()
 
     def get_latest_price(self, item_name):
+        """ 取得該品項最近一次的採購單價 (用於計算庫存成本) """
         related_pos = [p for p in self.data['po_db'] if p['item'] == item_name]
         if not related_pos:
             return 0 
         return related_pos[-1]['price']
 
     def refresh_warehouse_list(self):
+        """ 刷新待進貨與庫存列表 """
+        # 1. 刷新待進貨清單 (只顯示 Status = Open 的)
         for row in self.tree_in.get_children(): self.tree_in.delete(row)
         idx = 0
         for p in self.data['po_db']:
@@ -530,6 +586,7 @@ class AdvancedERPSystem:
                 self.tree_in.insert("", "end", values=(p['id'], p['item'], p['qty'], p['received_qty'], remain, status_txt), tags=(tag,))
                 idx += 1
 
+        # 2. 刷新庫存清單 (從 stock_db 讀取)
         for row in self.tree_stock.get_children(): self.tree_stock.delete(row)
         idx = 0
         for k, qty in self.data['stock_db'].items():
@@ -541,9 +598,11 @@ class AdvancedERPSystem:
             idx += 1
 
     def open_receipt_window(self, event):
+        """ 進貨驗收視窗 (點擊待進貨單據後觸發) """
         sel = self.tree_in.selection()
         if not sel: return
         po_id = self.tree_in.item(sel, 'values')[0]
+        # 找到原始採購單數據
         target_idx = next((i for i, p in enumerate(self.data['po_db']) if p['id'] == po_id), None)
         target_po = self.data['po_db'][target_idx]
         remain = target_po['qty'] - target_po['received_qty']
@@ -567,6 +626,7 @@ class AdvancedERPSystem:
         e_amt.insert(0, remain * target_po['price']) 
         e_amt.pack(fill='x', pady=5)
 
+        # 自動計算金額 (數量 x 單價)
         def auto_calc(event):
             try:
                 current_qty = e_qty.get()
@@ -582,18 +642,23 @@ class AdvancedERPSystem:
         e_qty.bind("<KeyRelease>", auto_calc)
 
         def confirm():
+            """ 確認收貨的核心邏輯 """
             try:
                 qty_in = int(e_qty.get())
                 amt_in = float(e_amt.get())
                 if qty_in > remain:
                     if not messagebox.askyesno("警告", "輸入數量大於訂購殘量，確定超收？"): return
 
+                # 1. 更新採購單狀態
                 target_po['received_qty'] += qty_in
                 if target_po['received_qty'] >= target_po['qty']:
                     target_po['status'] = 'Closed'
                 
+                # 2. 增加庫存
                 item = target_po['item']
                 self.data['stock_db'][item] = self.data['stock_db'].get(item, 0) + qty_in
+                
+                # 3. 產生應付帳款 (AP)
                 self.data['ap_db'].append({
                     'id': self.get_id("AP"),
                     'po_ref': target_po['id'],
@@ -603,6 +668,7 @@ class AdvancedERPSystem:
                     'amt': amt_in,
                     'status': 'Unpaid'
                 })
+                
                 self.save_data()
                 self.refresh_warehouse_list()
                 self.refresh_po_list()
@@ -615,6 +681,7 @@ class AdvancedERPSystem:
         self.create_flat_button(win, "確認入庫", confirm, COLORS["success"], icon="✅").pack(pady=30, fill='x', padx=30)
 
     def open_sales_window(self):
+        """ 銷貨/出庫視窗 """
         win = tk.Toplevel(self.root)
         win.title("銷貨/出庫單")
         win.geometry("350x450")
@@ -651,9 +718,12 @@ class AdvancedERPSystem:
                 qty = int(e_qty.get())
                 price = float(e_price.get())
                 current_stock = self.data['stock_db'].get(item, 0)
+                
+                # 檢查庫存是否足夠
                 if qty > current_stock:
                     return messagebox.showerror("錯誤", f"庫存不足！目前只有 {current_stock}")
                 
+                # 扣庫存 & 增加銷售紀錄
                 self.data['stock_db'][item] -= qty
                 self.data['sales_db'].append({
                     'date': e_date.get(),
@@ -671,8 +741,9 @@ class AdvancedERPSystem:
 
         self.create_flat_button(win, "確認出庫", confirm_sales, COLORS["danger"], icon="📤").pack(side='bottom', fill='x', padx=30, pady=30)
 
-    # ================= Tab 3: 財務 =================
+    # ================= Tab 3: 財務管理 =================
     def setup_finance_tab(self):
+        # 內部分頁：待付款 vs 已付款
         sub_notebook = ttk.Notebook(self.tab_finance)
         sub_notebook.pack(fill='both', expand=True, padx=10, pady=10)
         self.frame_unpaid = ttk.Frame(sub_notebook)
@@ -697,6 +768,7 @@ class AdvancedERPSystem:
         self.refresh_finance_list()
 
     def refresh_finance_list(self):
+        """ 根據付款狀態分類顯示 AP """
         for row in self.tree_unpaid.get_children(): self.tree_unpaid.delete(row)
         for row in self.tree_paid.get_children(): self.tree_paid.delete(row)
         
@@ -712,6 +784,7 @@ class AdvancedERPSystem:
                 idx_p += 1
 
     def process_payment(self):
+        """ 執行付款動作 """
         sel = self.tree_unpaid.selection()
         if not sel: return messagebox.showwarning("提示", "請選擇一筆帳款")
         item_vals = self.tree_unpaid.item(sel, 'values')
@@ -733,6 +806,7 @@ class AdvancedERPSystem:
         
         tk.Label(control_frame, text="選擇統計月份:", font=FONT_BOLD, bg=COLORS["bg_light"]).pack(side='left', padx=15)
         
+        # 產生最近 12 個月的選單
         months = []
         d = datetime.date.today()
         for i in range(12):
@@ -745,6 +819,7 @@ class AdvancedERPSystem:
         
         self.create_flat_button(control_frame, "刷新報表", self.refresh_dashboard, COLORS["secondary"], icon="🔄").pack(side='left', padx=15)
 
+        # 建立圖表分頁
         self.dash_notebook = ttk.Notebook(self.tab_dashboard)
         self.dash_notebook.pack(fill='both', expand=True, padx=10, pady=5)
         
@@ -752,26 +827,29 @@ class AdvancedERPSystem:
         self.page_trends = ttk.Frame(self.dash_notebook)
         self.page_individual = ttk.Frame(self.dash_notebook)
         self.page_cost_rev = ttk.Frame(self.dash_notebook)
-        self.page_list = ttk.Frame(self.dash_notebook) # 新增：庫存列表
+        self.page_list = ttk.Frame(self.dash_notebook) 
         
-        self.dash_notebook.add(self.page_overview, text=' 1. 銷售佔比') # 修改標題
+        self.dash_notebook.add(self.page_overview, text=' 1. 銷售佔比') 
         self.dash_notebook.add(self.page_trends, text=' 2. 進銷趨勢')
         self.dash_notebook.add(self.page_individual, text=' 3. 單品個別分析')
         self.dash_notebook.add(self.page_cost_rev, text=' 4. 成本與收入')
-        self.dash_notebook.add(self.page_list, text=' 5. 庫存狀態列表') # 新增標題
+        self.dash_notebook.add(self.page_list, text=' 5. 庫存狀態列表') 
 
-        self.init_list_page() # 初始化列表頁
+        self.init_list_page() 
 
     def clear_canvas(self, parent_frame):
+        """ 清除畫布上的舊圖表 """
         for widget in parent_frame.winfo_children():
             widget.destroy()
 
     def embed_chart(self, parent_frame, figure):
+        """ 將 Matplotlib Figure 嵌入 Tkinter Frame """
         canvas = FigureCanvasTkAgg(figure, master=parent_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)
 
     def refresh_dashboard(self):
+        """ 統籌刷新所有圖表 """
         target_month = self.dash_month_var.get()
         
         self.clear_canvas(self.page_overview)
@@ -785,7 +863,7 @@ class AdvancedERPSystem:
         self.clear_canvas(self.page_cost_rev)
         self.plot_financial_bar(self.page_cost_rev, target_month)
         
-        self.update_list_page() # 刷新列表
+        self.update_list_page()
 
     # --- Chart 1: 圓餅圖 (每月銷售佔比) ---
     def plot_overview_pie(self, parent, month):
@@ -805,8 +883,6 @@ class AdvancedERPSystem:
         fig = Figure(figsize=(7, 5), dpi=100)
         ax = fig.add_subplot(111)
 
-
-
         wedges, texts, autotexts = ax.pie(
                 sizes,
                 autopct='%1.1f%%',
@@ -814,23 +890,18 @@ class AdvancedERPSystem:
                 pctdistance=0.75,
                 colors=plt.cm.Set3.colors,
                 textprops=dict(color="black")
-)
+        )
 
-        
         plt.setp(autotexts, size=10, weight="bold")
         ax.set_title(f"【{month}】各品項銷售佔比", fontsize=14)
-        
-        ax.legend(wedges, labels,
-                  title="品項列表",
-                  loc="center left",
-                  bbox_to_anchor=(1, 0, 0.5, 1))
-
+        ax.legend(wedges, labels, title="品項列表", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
         self.embed_chart(parent, fig)
 
-    # --- Chart 2: 折線圖 ---
+    # --- Chart 2: 折線圖 (進銷趨勢) ---
     def plot_trend_line(self, parent):
         month_keys = []
         curr = datetime.date.today()
+        # 產生過去 6 個月的標籤
         for i in range(6):
             dt = curr - datetime.timedelta(days=30*i)
             month_keys.append(dt.strftime("%Y-%m"))
@@ -840,6 +911,7 @@ class AdvancedERPSystem:
         out_data = []
 
         for m in month_keys:
+            # 計算每月進貨量與銷貨量
             in_qty = sum([p['received_qty'] for p in self.data['po_db'] if p['delivery_date'].startswith(m)])
             in_data.append(in_qty)
             out_qty = sum([s['qty'] for s in self.data['sales_db'] if s['date'].startswith(m)])
@@ -859,16 +931,14 @@ class AdvancedERPSystem:
 
         self.embed_chart(parent, fig)
 
-# --- Chart 3: 單品分析 (已修改：每種商品不同顏色) ---
+    # --- Chart 3: 單品分析 (互動式) ---
     def setup_individual_analysis(self, parent):
         self.clear_canvas(parent)
         ctrl = tk.Frame(parent, bg="white", pady=10)
         ctrl.pack(fill='x')
         tk.Label(ctrl, text="選擇商品:", font=FONT_BOLD, bg="white").pack(side='left', padx=10)
         
-        # 取得所有品項列表 (用來決定顏色順序)
         items = list(self.data['stock_db'].keys())
-        
         cb = ttk.Combobox(ctrl, values=items, font=FONT_MAIN)
         cb.pack(side='left')
         
@@ -889,33 +959,23 @@ class AdvancedERPSystem:
             dates = [s['date'] for s in sales_history]
             qtys = [s['qty'] for s in sales_history]
 
-            # ================= 顏色設定區 =================
-            # 1. 找出這個商品在清單中的索引 (第幾個)
-            if item in items:
-                idx = items.index(item)
-            else:
-                idx = 0
-            
-            # 2. 選用一組色票 (這裡使用 Set3，顏色豐富且好看)
-            # 您也可以改成 plt.cm.tab10.colors (比較深色鮮豔)
+            # 根據商品順序分配固定顏色
+            if item in items: idx = items.index(item)
+            else: idx = 0
             color_palette = plt.cm.Set3.colors 
-            
-            # 3. 根據索引取出顏色 (使用 % 取餘數，避免商品數量超過顏色數量時報錯)
             specific_color = color_palette[idx % len(color_palette)]
-            # ============================================
 
             fig = Figure(figsize=(6, 4), dpi=100)
             ax = fig.add_subplot(111)
             
-            # 將 color 改為動態選取的 specific_color
             ax.bar(dates, qtys, color=specific_color, alpha=0.9, edgecolor='grey')
-            
             ax.set_title(f"【{item}】 銷售紀錄", fontsize=14)
             ax.set_ylabel("銷售數量")
             fig.autofmt_xdate()
             self.embed_chart(chart_frame, fig)
 
         tk.Button(ctrl, text="分析", command=draw_item_chart, bg=COLORS["secondary"], fg="white", font=FONT_BOLD).pack(side='left', padx=10)
+
     # --- Chart 4: 財務長條圖 ---
     def plot_financial_bar(self, parent, month):
         total_cost = 0
@@ -948,7 +1008,7 @@ class AdvancedERPSystem:
 
         self.embed_chart(parent, fig)
 
-    # --- Page 5: 庫存狀態列表 (加回的功能) ---
+    # --- Page 5: 庫存狀態列表 ---
     def init_list_page(self):
         cols = ("品項", "目前庫存", "狀態評估", "建議行動")
         self.tree_list = ttk.Treeview(self.page_list, columns=cols, show='headings')
@@ -956,12 +1016,14 @@ class AdvancedERPSystem:
             self.tree_list.heading(c, text=c)
             self.tree_list.column(c, anchor='center')
         
+        # 設定庫存過高或過低的顏色警示
         self.tree_list.tag_configure('low', background='#ffeaa7', foreground=COLORS["text"]) 
         self.tree_list.tag_configure('high', background='#55efc4', foreground=COLORS["text"])
         self.tree_list.tag_configure('even', background=COLORS["table_row_even"])
         self.tree_list.pack(fill='both', expand=True, padx=10, pady=10)
 
     def update_list_page(self):
+        """ 檢查庫存水位並給出建議 """
         for row in self.tree_list.get_children(): self.tree_list.delete(row)
         idx = 0
         for item, qty in self.data['stock_db'].items():
@@ -976,8 +1038,10 @@ class AdvancedERPSystem:
             self.tree_list.insert("", "end", values=(item, qty, status, action), tags=tags)
             idx += 1
 
+# ================= 主程式進入點 =================
 if __name__ == "__main__":
     root = tk.Tk()
+    # 嘗試開啟 DPI 感知，讓高解析度螢幕顯示更清晰
     try:
         from ctypes import windll
         windll.shcore.SetProcessDpiAwareness(1)
