@@ -1,0 +1,38 @@
+{
+    "po_db": [
+        {
+            "id": "PO-1228211241",
+            "source": "直接輸入",
+            "vendor": "光華科技",
+            "item": "CPU-i9",
+            "qty": 100,
+            "price": 300,
+            "delivery_date": "2025-12-28",
+            "received_qty": 0,
+            "email_status": "✅ 廠商已讀",
+            "status": "Open"
+        }
+    ],
+    "stock_db": {
+        "CPU-i9": 5,
+        "RAM-16G": 50
+    },
+    "ap_db": [],
+    "memory_items": [
+        "CPU-i9",
+        "RAM-16G",
+        "SSD-1TB",
+        "Office軟體"
+    ],
+    "memory_vendors": [
+        "光華科技",
+        "原價屋",
+        "微軟經銷商"
+    ],
+    "source_types": [
+        "直接輸入",
+        "採購計畫拋轉",
+        "訂貨單拋轉",
+        "詢價單轉入"
+    ]
+}

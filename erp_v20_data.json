@@ -1,0 +1,587 @@
+{
+    "po_db": [
+        {
+            "id": "PO-1228212119",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 30,
+            "delivery_date": "2025-12-31",
+            "received_qty": 100,
+            "status": "Closed",
+            "email_status": "✅ 廠商已讀",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228212148",
+            "source": "採購計畫",
+            "vendor": "原價屋",
+            "item": "SSD-1TB",
+            "qty": 200,
+            "price": 30,
+            "delivery_date": "2025-11-14",
+            "received_qty": 200,
+            "status": "Closed",
+            "email_status": "未傳送",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228212845",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 150,
+            "delivery_date": "2025-12-11",
+            "received_qty": 100,
+            "status": "Closed",
+            "email_status": "未傳送",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228213823",
+            "source": "採購計畫",
+            "vendor": "原價屋",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 20,
+            "delivery_date": "2025-12-16",
+            "received_qty": 100,
+            "email_status": "未傳送",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228213912",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 30,
+            "delivery_date": "2025-11-19",
+            "received_qty": 100,
+            "email_status": "✅ 廠商已讀",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228213926",
+            "source": "訂貨單",
+            "vendor": "原價屋",
+            "item": "SSD-1TB",
+            "qty": 150,
+            "price": 23,
+            "delivery_date": "2025-11-03",
+            "received_qty": 150,
+            "email_status": "✅ 廠商已讀",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-1228213947",
+            "source": "訂貨單",
+            "vendor": "原價屋",
+            "item": "SSD-1TB",
+            "qty": 12345,
+            "price": 10,
+            "delivery_date": "2025-11-27",
+            "received_qty": 12345,
+            "email_status": "✅ 廠商已讀",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-0102004901",
+            "source": "採購計畫",
+            "vendor": "光華科技",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 30,
+            "delivery_date": "2025-12-17",
+            "received_qty": 100,
+            "email_status": "✅ 廠商已讀",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-0102004920",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "Office軟體",
+            "qty": 200,
+            "price": 450,
+            "delivery_date": "2025-11-05",
+            "received_qty": 200,
+            "email_status": "已傳送 (廠商未讀)",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-0102004936",
+            "source": "直接輸入",
+            "vendor": "微軟經銷商",
+            "item": "Office軟體",
+            "qty": 300,
+            "price": 123,
+            "delivery_date": "2025-10-16",
+            "received_qty": 300,
+            "email_status": "已傳送 (廠商未讀)",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-0102004955",
+            "source": "詢價單",
+            "vendor": "原價屋",
+            "item": "Office軟體",
+            "qty": 453,
+            "price": 522,
+            "delivery_date": "2025-12-25",
+            "received_qty": 453,
+            "email_status": "✅ 廠商已讀",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-0102012647",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "Office軟體",
+            "qty": 100,
+            "price": 3350,
+            "delivery_date": "2025-11-12",
+            "received_qty": 90,
+            "email_status": "已傳送 (廠商未讀)",
+            "status": "Open",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01021653",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "SSD-1TB",
+            "qty": 200,
+            "price": 300,
+            "delivery_date": "2026-01-02",
+            "received_qty": 100,
+            "email_status": "✅ 廠商已讀",
+            "status": "Open",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01025228",
+            "source": "採購計畫",
+            "vendor": "AAA",
+            "item": "無線滑鼠",
+            "qty": 50,
+            "price": 439,
+            "delivery_date": "2025-11-07",
+            "received_qty": 25,
+            "email_status": "未傳送",
+            "status": "Open",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01025303",
+            "source": "採購計畫",
+            "vendor": "BBB",
+            "item": "機械式鍵盤",
+            "qty": 30,
+            "price": 1690,
+            "delivery_date": "2025-10-06",
+            "received_qty": 35,
+            "email_status": "未傳送",
+            "status": "Closed",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01025225",
+            "source": "訂貨單",
+            "vendor": "CCC",
+            "item": "27 吋 LED 螢幕",
+            "qty": 15,
+            "price": 6580,
+            "delivery_date": "2026-01-16",
+            "received_qty": 0,
+            "email_status": "✅ 廠商已讀",
+            "status": "Open",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01152625",
+            "source": "直接輸入",
+            "vendor": "原價屋",
+            "item": "無線滑鼠",
+            "qty": 330,
+            "price": 30.0,
+            "delivery_date": "2025-12-24",
+            "received_qty": 150,
+            "email_status": "未傳送",
+            "status": "Open",
+            "mfg_date": ""
+        },
+        {
+            "id": "PO-01085335",
+            "source": "直接輸入",
+            "vendor": "BBB",
+            "item": "SSD-1TB",
+            "mfg_date": "2025-08-15",
+            "qty": 1000,
+            "price": 300.0,
+            "delivery_date": "2026-01-09",
+            "received_qty": 500,
+            "email_status": "未傳送",
+            "status": "Open"
+        },
+        {
+            "id": "PO-01133634",
+            "source": "直接輸入",
+            "vendor": "BBB",
+            "item": "27 吋 LED 螢幕",
+            "mfg_date": "2025-06-11",
+            "qty": 1000,
+            "price": 2999.0,
+            "delivery_date": "2026-01-09",
+            "received_qty": 0,
+            "email_status": "未傳送",
+            "status": "Open"
+        },
+        {
+            "id": "PO-01133813",
+            "source": "直接輸入",
+            "vendor": "AAA",
+            "item": "機械式鍵盤",
+            "mfg_date": "2024-01-02",
+            "qty": 500,
+            "price": 2109.0,
+            "delivery_date": "2025-12-19",
+            "received_qty": 250,
+            "email_status": "未傳送",
+            "status": "Open"
+        }
+    ],
+    "stock_db": {
+        "RAM-16G": 0,
+        "SSD-1TB": 300,
+        "Office軟體": 203,
+        "無線滑鼠": 100,
+        "機械式鍵盤": 260
+    },
+    "sales_db": [
+        {
+            "date": "2025-12-28",
+            "item": "RAM-16G",
+            "qty": 400,
+            "price": 0,
+            "total": 0
+        },
+        {
+            "date": "2025-12-31",
+            "item": "SSD-1TB",
+            "qty": 12695,
+            "price": 0,
+            "total": 0
+        },
+        {
+            "date": "2026-01-02",
+            "item": "RAM-16G",
+            "qty": 100,
+            "price": 300,
+            "total": 30000
+        },
+        {
+            "date": "2025-12-17",
+            "item": "Office軟體",
+            "qty": 50,
+            "price": 330,
+            "total": 16500
+        },
+        {
+            "date": "2025-11-20",
+            "item": "Office軟體",
+            "qty": 30,
+            "price": 600,
+            "total": 18000
+        },
+        {
+            "date": "2025-10-23",
+            "item": "Office軟體",
+            "qty": 60,
+            "price": 330,
+            "total": 19800
+        },
+        {
+            "date": "2026-01-02",
+            "item": "無線滑鼠",
+            "qty": 25,
+            "price": 732,
+            "total": 18300
+        },
+        {
+            "date": "2026-01-02",
+            "item": "機械式鍵盤",
+            "qty": 25,
+            "price": 300,
+            "total": 7500
+        },
+        {
+            "date": "2026-01-02",
+            "item": "Office軟體",
+            "qty": 500,
+            "price": 3390,
+            "total": 1695000
+        },
+        {
+            "date": "2026-01-09",
+            "item": "SSD-1TB",
+            "qty": 300,
+            "price": 500.0,
+            "total": 150000.0
+        },
+        {
+            "date": "2026-01-21",
+            "item": "Office軟體",
+            "qty": 200,
+            "price": 600.0,
+            "total": 120000.0
+        },
+        {
+            "date": "2026-01-16",
+            "item": "無線滑鼠",
+            "qty": 50,
+            "price": 3500.0,
+            "total": 175000.0
+        }
+    ],
+    "ap_db": [
+        {
+            "id": "AP-1228212848",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 RAM-16G",
+            "amt": 3000,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228212849",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 RAM-16G",
+            "amt": 15000,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228212851",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 SSD-1TB",
+            "amt": 6000,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228213851",
+            "po_ref": "PO-1228213823",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 RAM-16G x100",
+            "amt": 2000,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228214018",
+            "po_ref": "PO-1228213912",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 RAM-16G x100",
+            "amt": 3000,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228214023",
+            "po_ref": "PO-1228213926",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 SSD-1TB x150",
+            "amt": 3450,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-1228214027",
+            "po_ref": "PO-1228213947",
+            "date": "2025-12-28",
+            "vendor": "原價屋",
+            "desc": "進貨 SSD-1TB x12345",
+            "amt": 123450,
+            "status": "Paid",
+            "pay_date": "2025-12-28"
+        },
+        {
+            "id": "AP-0102005058",
+            "po_ref": "PO-0102004901",
+            "date": "2026-01-02",
+            "vendor": "光華科技",
+            "desc": "進貨 RAM-16G x100",
+            "amt": 3000,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-0102005102",
+            "po_ref": "PO-0102004920",
+            "date": "2026-01-02",
+            "vendor": "原價屋",
+            "desc": "進貨 Office軟體 x200",
+            "amt": 90000,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-0102005104",
+            "po_ref": "PO-0102004936",
+            "date": "2026-01-02",
+            "vendor": "微軟經銷商",
+            "desc": "進貨 Office軟體 x300",
+            "amt": 36900,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-0102005107",
+            "po_ref": "PO-0102004955",
+            "date": "2026-01-02",
+            "vendor": "原價屋",
+            "desc": "進貨 Office軟體 x453",
+            "amt": 236466,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-01030137",
+            "po_ref": "PO-0102012647",
+            "date": "2026-01-02",
+            "vendor": "原價屋",
+            "desc": "進貨 Office軟體 x50",
+            "amt": 167500,
+            "status": "Paid",
+            "pay_date": "2026-01-09"
+        },
+        {
+            "id": "AP-01030501",
+            "po_ref": "PO-01025228",
+            "date": "2026-01-02",
+            "vendor": "AAA",
+            "desc": "進貨 無線滑鼠 x25",
+            "amt": 10975,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-01143226",
+            "po_ref": "PO-01025303",
+            "date": "2026-01-02",
+            "vendor": "BBB",
+            "desc": "進貨 機械式鍵盤 x25",
+            "amt": 42250,
+            "status": "Paid",
+            "pay_date": "2026-01-02"
+        },
+        {
+            "id": "AP-01150022",
+            "po_ref": "PO-0102012647",
+            "date": "2026-01-02",
+            "vendor": "原價屋",
+            "desc": "進貨 Office軟體 x25",
+            "amt": 83750.0,
+            "status": "Paid",
+            "pay_date": "2026-01-09"
+        },
+        {
+            "id": "AP-01150029",
+            "po_ref": "PO-01025303",
+            "date": "2026-01-02",
+            "vendor": "BBB",
+            "desc": "進貨 機械式鍵盤 x10",
+            "amt": 16900.0,
+            "status": "Paid",
+            "pay_date": "2026-01-09"
+        },
+        {
+            "id": "AP-01152746",
+            "po_ref": "PO-0102012647",
+            "date": "2026-01-02",
+            "vendor": "原價屋",
+            "desc": "進貨 Office軟體 x15",
+            "amt": 50250.0,
+            "status": "Paid",
+            "pay_date": "2026-01-09"
+        },
+        {
+            "id": "AP-01090607",
+            "po_ref": "PO-01085335",
+            "date": "2026-01-09",
+            "vendor": "BBB",
+            "desc": "進貨 SSD-1TB x500",
+            "amt": 150000.0,
+            "status": "Unpaid"
+        },
+        {
+            "id": "AP-01090615",
+            "po_ref": "PO-01021653",
+            "date": "2026-01-09",
+            "vendor": "原價屋",
+            "desc": "進貨 SSD-1TB x100",
+            "amt": 30000.0,
+            "status": "Unpaid"
+        },
+        {
+            "id": "AP-01090627",
+            "po_ref": "PO-01152625",
+            "date": "2026-01-09",
+            "vendor": "原價屋",
+            "desc": "進貨 無線滑鼠 x150",
+            "amt": 4500.0,
+            "status": "Paid",
+            "pay_date": "2026-01-09"
+        },
+        {
+            "id": "AP-01133954",
+            "po_ref": "PO-01133813",
+            "date": "2026-01-09",
+            "vendor": "AAA",
+            "desc": "進貨 機械式鍵盤 x250",
+            "amt": 527250.0,
+            "status": "Unpaid"
+        }
+    ],
+    "memory_items": [
+        "CPU-i9",
+        "RAM-16G",
+        "SSD-1TB",
+        "Office軟體",
+        "無線滑鼠",
+        "機械式鍵盤",
+        "27 吋 LED 螢幕"
+    ],
+    "memory_vendors": [
+        "光華科技",
+        "原價屋",
+        "微軟經銷商",
+        "AAA",
+        "BBB",
+        "CCC"
+    ],
+    "source_types": [
+        "直接輸入",
+        "採購計畫",
+        "訂貨單",
+        "詢價單"
+    ],
+    "cost_db": {}
+}
